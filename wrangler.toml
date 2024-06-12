@@ -1,0 +1,6 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "contacthub-worker"
+main = "src/index.ts"
+compatibility_date = "2024-05-29"
+compatibility_flags = ["nodejs_compat"]
+account_id = "1a01d33f9fd9b3a8d541c986160308c1"
