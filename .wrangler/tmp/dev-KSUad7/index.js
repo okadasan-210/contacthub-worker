@@ -5729,7 +5729,35 @@ app.post(
   }
   const company = new CompanyEntity(JSON.parse(value));
   return context.json(company);
-});
+}).put(
+  "/:uuid",
+  zValidator(
+    "json",
+    z.object({
+      name: z.string().min(1).max(255).optional(),
+      address: z.string().min(1).max(255).optional(),
+      tel: z.string().min(1).max(255).optional()
+    })
+  ),
+  async (context) => {
+    const requestBody = context.req.valid("json");
+    const selectId = context.req.param("uuid");
+    const kv = context.env.KV;
+    const value = await kv.get(`company:${selectId}`);
+    if (!value) {
+      return context.json({ message: "\u30EC\u30B3\u30FC\u30C9\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093\u3067\u3057\u305F" }, 404);
+    }
+    const beforeCompany = new CompanyEntity(JSON.parse(value));
+    const afterCompany = {
+      id: selectId,
+      name: requestBody.name ?? beforeCompany.name,
+      address: requestBody.address ?? beforeCompany.address,
+      tel: requestBody.tel ?? beforeCompany.tel
+    };
+    await kv.put(`company:${selectId}`, JSON.stringify(afterCompany));
+    return context.json({ message: `company:${selectId}\u306B${requestBody.name}\u3092\u7DE8\u96C6\u3057\u4FDD\u5B58\u3057\u307E\u3057\u305F` });
+  }
+);
 var company_default = app;
 
 // src/index.ts

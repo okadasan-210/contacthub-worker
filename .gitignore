@@ -1,5 +1,3 @@
-/credentials/*
-/dist/
 node_modules/
 .DS_Store
-credentials.json
+.wrangler

@@ -41,7 +41,37 @@ app
     //JSON.parse等のメソッドの復習をする!!!!!!!!!!!
 
     return context.json(company);
-  });
+  })
+
+  .put(
+    '/:uuid',
+    zValidator(
+      'json',
+      z.object({
+        name: z.string().min(1).max(255).optional(),
+        address: z.string().min(1).max(255).optional(),
+        tel: z.string().min(1).max(255).optional(),
+      }),
+    ),
+    async context => {
+      const requestBody = context.req.valid('json');
+      const selectId = context.req.param('uuid');
+      const kv = context.env.KV;
+      const value = await kv.get(`company:${selectId}`);
+      if (!value) {
+        return context.json({ message: 'レコードが見つかりませんでした' }, 404);
+      }
+      const beforeCompany = new CompanyEntity(JSON.parse(value));
+      const afterCompany: CompanyEntity = {
+        id: selectId,
+        name: requestBody.name ?? beforeCompany.name,
+        address: requestBody.address ?? beforeCompany.address,
+        tel: requestBody.tel ?? beforeCompany.tel,
+      };
+      await kv.put(`company:${selectId}`, JSON.stringify(afterCompany));
+      return context.json({ message: `company:${selectId}に${requestBody.name}を編集し保存しました` });
+    },
+  );
 
 // .post('/kv-test', async context => {
 //   const kv = context.env.KV;
