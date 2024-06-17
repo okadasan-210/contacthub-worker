@@ -4,3 +4,7 @@ main = "src/index.ts"
 compatibility_date = "2024-05-29"
 compatibility_flags = ["nodejs_compat"]
 account_id = "1a01d33f9fd9b3a8d541c986160308c1"
+
+kv_namespaces = [
+    { binding = "KV", id = "3875b18160a1472792b25f4587ac77c3" , preview_id = "3875b18160a1472792b25f4587ac77c3"}
+]
