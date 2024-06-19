@@ -71,7 +71,22 @@ app
       await kv.put(`company:${selectId}`, JSON.stringify(afterCompany));
       return context.json({ message: `company:${selectId}に${requestBody.name}を編集し保存しました` });
     },
-  );
+  )
+
+  .delete('/:uuid',async context =>{
+        const id = context.req.param('uuid');
+        const kv = context.env.KV;
+        const value = await kv.get(`company:${id}`);
+        if (!value) {
+          return context.json({ message: 'レコードが見つかりませんでした' }, 404);
+        }else{
+          await kv.delete(`company:${id}`);
+          return context.json({ message: `company:${id}の企業情報を削除しました` });
+        }
+  }
+  )
+
+
 
 // .post('/kv-test', async context => {
 //   const kv = context.env.KV;

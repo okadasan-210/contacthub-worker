@@ -5757,6 +5757,19 @@ app.post(
     await kv.put(`company:${selectId}`, JSON.stringify(afterCompany));
     return context.json({ message: `company:${selectId}\u306B${requestBody.name}\u3092\u7DE8\u96C6\u3057\u4FDD\u5B58\u3057\u307E\u3057\u305F` });
   }
+).delete(
+  "/:uuid",
+  async (context) => {
+    const id = context.req.param("uuid");
+    const kv = context.env.KV;
+    const value = await kv.get(`company:${id}`);
+    if (!value) {
+      return context.json({ message: "\u30EC\u30B3\u30FC\u30C9\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093\u3067\u3057\u305F" }, 404);
+    } else {
+      await kv.delete(`company:${id}`);
+      return context.json({ message: `company:${id}\u306E\u4F01\u696D\u60C5\u5831\u3092\u524A\u9664\u3057\u307E\u3057\u305F` });
+    }
+  }
 );
 var company_default = app;
 
